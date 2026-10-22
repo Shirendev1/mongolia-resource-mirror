@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Баялгийн толь</title>
+<meta name="description" content="Монголын экспорт ба Хятадын импортын бүртгэлийг тулгаж харьцуулдаг нээлттэй самбар · Mongolia–China mirror trade monitor">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#f6f4ef; --panel:#ffffff; --ink:#1d1f22; --muted:#5f646b; --line:#e2ded5;
+  --mn:#1f5f8b; --cn:#c0392b; --gap:#b7791f; --ok:#2f7d4f; --flag-bg:#fbeee4;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171a; --panel:#1e2125; --ink:#eceae5; --muted:#a3a7ad; --line:#30343a;
+    --mn:#6aaee0; --cn:#ef7a6c; --gap:#e0b04f; --ok:#6cc690; --flag-bg:#3a2a20;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171a; --panel:#1e2125; --ink:#eceae5; --muted:#a3a7ad; --line:#30343a;
+  --mn:#6aaee0; --cn:#ef7a6c; --gap:#e0b04f; --ok:#6cc690; --flag-bg:#3a2a20;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 16px 64px}
+header h1{font-size:clamp(28px,5vw,40px);margin:0 0 4px;letter-spacing:-.01em}
+header .en{color:var(--muted);margin:0 0 16px}
+header p.lede{max-width:720px;margin:0}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 16px}
+.tabs button{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 16px;border-radius:999px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:16px}
+.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card .k{color:var(--muted);font-size:13px}
+.card .v{font:500 26px/1.2 "IBM Plex Mono",monospace;margin-top:4px}
+.card .s{font-size:13px;color:var(--muted);margin-top:4px}
+.panel{margin-bottom:16px}
+.panel h2{font-size:18px;margin:0 0 4px}
+.panel p.note{color:var(--muted);font-size:14px;margin:0 0 12px}
+.chart{position:relative;height:300px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child,td.flags,th.flags{text-align:left}
+td.flags{white-space:normal;min-width:180px}
+th{color:var(--muted);font-weight:500}
+.tbl{overflow-x:auto}
+.neg{color:var(--cn)} .pos{color:var(--ok)}
+.chip{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--flag-bg);color:var(--gap);margin:2px 4px 2px 0}
+.chip.grey{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.method li{margin-bottom:6px}
+footer{color:var(--muted);font-size:13px;margin-top:24px}
+.mono{font-family:"IBM Plex Mono",monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Баялгийн толь</h1>
+  <p class="en">Mongolia Resource Mirror · Монгол–Хятадын толин худалдааны хяналт</p>
+  <p class="lede">Монгол “ийм хэмжээний баялаг гаргасан” гэж бүртгэсэн тоог Хятад “хүлээн авсан” гэж бүртгэсэн тоотой тулгана. Зөрүү гарвал асуулт тавих шалтгаан болно — шууд буруутгал биш.</p>
+</header>
+
+<div class="tabs" id="tabs" role="group" aria-label="Бүтээгдэхүүн"></div>
+
+<div class="cards" id="cards"></div>
+
+<section class="panel">
+  <h2>Жилийн үнийн дүн</h2>
+  <p class="note">Монголын экспортын мэдүүлэг ба Хятадын импортын мэдүүлэг, тэрбум ам.доллар. Ердийн үед Хятадын тоо бага зэрэг их байх ёстой (тээвэр, даатгал нэмэгддэг).</p>
+  <div class="chart"><canvas id="annual"></canvas></div>
+</section>
+
+<section class="panel" id="monthlyPanel">
+  <h2>Сар бүрийн зөрүү</h2>
+  <p class="note">Хятадын бүртгэл минус Монголын бүртгэл, сая ам.доллар. Сөрөг = Хятад бага бүртгэсэн. Баар байхгүй сар = нэг тал нь өгөгдөл илгээгээгүй.</p>
+  <div class="chart"><canvas id="monthly"></canvas></div>
+</section>
+
+<section class="panel">
+  <h2>Дэлгэрэнгүй хүснэгт</h2>
+  <p class="note">Тэмдэг бүр нь шалгах ёстой асуулт юм.</p>
+  <div class="tbl"><table id="table"></table></div>
+</section>
+
+<section class="panel method">
+  <h2>Арга зүй</h2>
+  <ul>
+    <li><b>Эх сурвалж:</b> НҮБ-ын Comtrade сан — улс бүр өөрийн гаалийн мэдүүлгээ илгээдэг.</li>
+    <li><b>Толин харьцуулалт:</b> нэг ачааг хоёр улс хоёр удаа бүртгэдэг. Хоёр бүртгэл зөрвөл тайлбар шаардлагатай.</li>
+    <li><b>Хэвийн зөрүүний шалтгаан:</b> оны/сарын заагаар бүртгэл шилжих, тээврийн зардал (CIF ба FOB), нойтон ба хуурай тонн, ангиллын ялгаа.</li>
+    <li><b>Хязгаарлалт:</b> “тооцоолсон жин” гэж тэмдэглэгдсэн тоог үнийн харьцуулалтад ашиглахгүй. Өгөгдөл илгээгээгүй сарыг тусад нь тэмдэглэнэ.</li>
+  </ul>
+</section>
+
+<footer>
+  <div>Өгөгдөл шинэчилсэн: <span id="gen" class="mono"></span> · Эх сурвалж: <a href="https://comtradeplus.un.org" style="color:inherit">UN Comtrade</a></div>
+  <div>Нээлттэй эх код. Зөрүү нь гэмт хэргийн нотолгоо биш — албан байгууллагад тавих асуулт юм.</div>
+</footer>
+</div>
+
+<script>
+const FLAG = {
+  VALUE_GAP:["Үнийн дүн зөрүүтэй","Value gap"],
+  IMPORT_BELOW:["Хятад бага бүртгэсэн","Importer below exporter"],
+  WEIGHT_GAP:["Тонн зөрүүтэй","Weight gap"],
+  PRICE_GAP:["Тонн тутмын үнэ зөрүүтэй","Price gap"],
+  ESTIMATED_WEIGHT:["Жин тооцоолсон","Estimated weight"],
+  MISSING_EXPORTER:["Монгол илгээгээгүй","Exporter missing"],
+  MISSING_IMPORTER:["Хятад илгээгээгүй","Importer missing"],
+};
+const GREY = new Set(["ESTIMATED_WEIGHT","MISSING_EXPORTER","MISSING_IMPORTER"]);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmtB = v => v==null ? "—" : (v/1e9).toFixed(2);
+const fmtMt = v => v==null ? "—" : (v/1e6).toFixed(2);
+const fmtP = v => v==null ? "—" : Math.round(v).toLocaleString("en-US");
+const fmtPct = v => v==null ? "—" : (v>0?"+":"")+v.toFixed(1)+"%";
+let DATA, HS, charts = {};
+
+fetch("data/mirror.json").then(r=>r.json()).then(d=>{
+  DATA = d;
+  document.getElementById("gen").textContent = d.generated;
+  const tabs = document.getElementById("tabs");
+  const order = d.commodity_order || Object.keys(d.commodities);
+  order.forEach(hs=>{ const n = d.commodities[hs];
+    const b = document.createElement("button");
+    b.textContent = n.mn; b.title = n.en+" (HS "+hs+")";
+    b.onclick = ()=>select(hs);
+    b.dataset.hs = hs; tabs.appendChild(b);
+  });
+  let saved = null; try { saved = localStorage.getItem("hs"); } catch(e) {}
+  select(d.commodities[saved] ? saved : order[0]);
+}).catch(()=>{
+  document.getElementById("cards").innerHTML = '<div class="card">Өгөгдөл ачаалж чадсангүй. Хуудсыг вэб сервер (GitHub Pages) дээрээс нээнэ үү.</div>';
+});
+
+function select(hs){
+  HS = hs;
+  try { localStorage.setItem("hs", hs); } catch(e) {}
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.hs===hs));
+  const rows = DATA.rows.filter(r=>r.hs===hs);
+  const A = rows.filter(r=>r.freq==="A").sort((a,b)=>a.period.localeCompare(b.period));
+  const M = rows.filter(r=>r.freq==="M").sort((a,b)=>a.period.localeCompare(b.period));
+  cards(A); annual(A); monthly(M); table(A, M);
+}
+
+function cards(A){
+  const paired = A.filter(r=>r.gap_value!=null);
+  const worst = paired.reduce((w,r)=>(!w||Math.abs(r.gap_value)>Math.abs(w.gap_value))?r:w, null);
+  const total = paired.reduce((s,r)=>s+r.gap_value,0);
+  const latest = A[A.length-1];
+  const missing = A.filter(r=>r.flags.includes("MISSING_EXPORTER")).map(r=>r.period);
+  document.getElementById("cards").innerHTML = `
+    <div class="card"><div class="k">Хамгийн их зөрүүтэй он</div>
+      <div class="v ${worst&&worst.gap_value<0?'neg':''}">${worst?worst.period:"—"}</div>
+      <div class="s">${worst?((worst.gap_value/1e6).toFixed(0)+" сая $ ("+fmtPct(worst.gap_value_pct)+")"):""}</div></div>
+    <div class="card"><div class="k">Нийт зөрүү (${paired.length} он)</div>
+      <div class="v ${total<0?'neg':''}">${(total/1e6).toFixed(0)} сая $</div>
+      <div class="s">Хятад − Монгол</div></div>
+    <div class="card"><div class="k">Сүүлийн он (${latest?latest.period:"—"})</div>
+      <div class="v">${latest?fmtB(latest.im_value ?? latest.ex_value):"—"} тэрбум $</div>
+      <div class="s">${latest&&latest.im_value!=null?"Хятадын бүртгэлээр":"Монголын бүртгэлээр"}</div></div>
+    <div class="card"><div class="k">Монгол илгээгээгүй жил</div>
+      <div class="v">${missing.length}</div>
+      <div class="s">${missing.join(", ")||"бүгд илгээсэн"}</div></div>`;
+}
+
+function baseOpts(){
+  return {responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:css("--ink")}}},
+    scales:{x:{ticks:{color:css("--muted")},grid:{color:css("--line")}},
+            y:{ticks:{color:css("--muted")},grid:{color:css("--line")}}}};
+}
+
+function annual(A){
+  charts.a && charts.a.destroy();
+  charts.a = new Chart(document.getElementById("annual"), {type:"bar",
+    data:{labels:A.map(r=>r.period), datasets:[
+      {label:"Монгол: экспорт", data:A.map(r=>r.ex_value&&r.ex_value/1e9), backgroundColor:css("--mn")},
+      {label:"Хятад: импорт", data:A.map(r=>r.im_value&&r.im_value/1e9), backgroundColor:css("--cn")}]},
+    options:baseOpts()});
+}
+
+function monthly(M){
+  const panel = document.getElementById("monthlyPanel");
+  if(!M.length){ panel.style.display="none"; return; }
+  panel.style.display="";
+  charts.m && charts.m.destroy();
+  charts.m = new Chart(document.getElementById("monthly"), {type:"bar",
+    data:{labels:M.map(r=>r.period.slice(0,4)+"-"+r.period.slice(4)), datasets:[
+      {label:"Зөрүү (сая $)", data:M.map(r=>r.gap_value==null?null:r.gap_value/1e6),
+       backgroundColor:M.map(r=>r.gap_value<0?css("--cn"):css("--ok"))}]},
+    options:{...baseOpts(), plugins:{legend:{display:false}}}});
+}
+
+function chips(flags){
+  return flags.map(f=>`<span class="chip ${GREY.has(f)?'grey':''}" title="${FLAG[f]?.[1]||f}">${FLAG[f]?.[0]||f}</span>`).join("") || '<span class="chip grey">Хэвийн</span>';
+}
+
+function table(A, M){
+  const rows = [...A, ...M.filter(r=>r.flags.length)];
+  document.getElementById("table").innerHTML = `
+    <thead><tr><th>Хугацаа</th><th>Монгол, тэрбум $</th><th>Хятад, тэрбум $</th><th>Зөрүү</th>
+    <th>Монгол, сая т</th><th>Хятад, сая т</th><th>Монгол $/т</th><th>Хятад $/т</th><th class="flags">Тэмдэг</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr>
+      <td>${r.freq==="M"?r.period.slice(0,4)+"-"+r.period.slice(4):r.period}</td>
+      <td class="mono">${fmtB(r.ex_value)}</td><td class="mono">${fmtB(r.im_value)}</td>
+      <td class="mono ${r.gap_value_pct<0?'neg':''}">${fmtPct(r.gap_value_pct)}</td>
+      <td class="mono">${fmtMt(r.ex_tonnes)}</td><td class="mono">${fmtMt(r.im_tonnes)}</td>
+      <td class="mono">${fmtP(r.ex_price)}</td><td class="mono">${fmtP(r.im_price)}</td>
+      <td class="flags">${chips(r.flags)}</td></tr>`).join("")}</tbody>`;
+}
+</script>
+</body>
+</html>

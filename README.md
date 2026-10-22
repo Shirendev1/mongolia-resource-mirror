@@ -1,2 +1,54 @@
-# mongolia-resource-mirror
-Open-data mirror of Mongolia's natural resource exports: what leaves the country, where it goes, and who gets paid. Part of MCBI / World Love.
+# Баялгийн толь · Mongolia Resource Mirror
+
+Монголын байгалийн баялаг хилээр гарахдаа хэр хэмжээгээр, ямар үнээр бүртгэгдэж, хүлээн авагч улсад хэрхэн бүртгэгдэж байгааг тулгаж харьцуулдаг нээлттэй систем.
+
+*Open-data mirror of Mongolia's natural resource exports: what leaves the country, where it goes, and who gets paid. It compares what Mongolia reports exporting with what its trading partners report importing ("mirror trade statistics"), to surface gaps that deserve questions.*
+
+## Хэрхэн ажилладаг вэ · How it works
+
+1. **Өгөгдөл татах** — `scripts/fetch_comtrade.py` НҮБ-ын Comtrade сангаас Монголын экспорт, Хятадын импортын мэдүүлгийг (жил, сар бүрээр) татна.
+2. **Тулгах** — `scripts/analyze.py` хоёр мэдүүлгийг харьцуулж, зөрүүг тэмдэглэнэ.
+3. **Харуулах** — `docs/index.html` самбар GitHub Pages дээр нийтэд харагдана.
+4. **Автомат шинэчлэлт** — GitHub Actions сар бүрийн 5-нд өөрөө ажиллана.
+
+## Тэмдгүүд · Flags
+
+| Тэмдэг | Утга |
+|---|---|
+| Үнийн дүн зөрүүтэй | Хоёр улсын бүртгэл 5%-аас их зөрсөн |
+| Хятад бага бүртгэсэн | Импортлогч экспортлогчоос бага бүртгэсэн — ердийн үед эсрэгээрээ байдаг |
+| Тонн зөрүүтэй | Жин 10%-аас их зөрсөн |
+| Тонн тутмын үнэ зөрүүтэй | Нэгжийн үнэ 10%-аас их зөрсөн |
+| Жин тооцоолсон | Нэг талын жин хэмжсэн биш, тооцоолсон тоо |
+| ... илгээгээгүй | Тухайн улс энэ хугацааны өгөгдлөө НҮБ-д илгээгээгүй |
+
+**Тэмдэг бол буруутгал биш — тайлбар шаардах асуулт.** Хэвийн зөрүүний шалтгаан: оны заагаар бүртгэл шилжих, тээврийн зардал (CIF/FOB), нойтон ба хуурай тонн, ангиллын ялгаа.
+
+## Тохируулах · Setup
+
+1. [comtradeplus.un.org](https://comtradeplus.un.org) дээр үнэгүй бүртгүүлж API түлхүүр авна.
+2. Репогийн **Settings → Secrets and variables → Actions → New repository secret**: нэр `COMTRADE_KEY`, утга нь таны түлхүүр.
+3. **Settings → Pages**: Source = *Deploy from a branch*, Branch = `main`, Folder = `/docs`.
+4. **Actions** табаас *Monthly data update* → *Run workflow* дарж анх удаа ажиллуулна.
+
+Түлхүүргүй үед систем НҮБ-ын нээлттэй (preview) API-г ашиглана — удаан боловч ажиллана.
+
+## Бүтээгдэхүүн нэмэх · Adding commodities
+
+`scripts/config.py` дотор `COMMODITIES` жагсаалтад HS код нэмнэ. Жишээ нь: `"7108"` алт, `"2601"` төмрийн хүдэр, `"2529"` жонш.
+
+## Төслийн үе шатууд · Roadmap
+
+- [x] 1. Нүүрс, зэсийн толин харьцуулалт (Монгол ↔ Хятад)
+- [ ] 2. Алт, төмрийн хүдэр, жонш, цайр; дэлхийн зах зээлийн үнэтэй тулгах; EITI төлбөрийн мэдээ
+- [ ] 3. Хиймэл дагуул (Sentinel): хилийн боомт, уурхайн овоолгын хяналт
+- [ ] 4. Албан байгууллагуудтай өгөгдөл хуваалцах гэрээ
+
+## Эх сурвалж · Sources
+
+- UN Comtrade — https://comtradeplus.un.org
+- EITI Mongolia — https://eitimongolia.mn
+
+Энэ төсөл нь [MCBI](https://mcbis.org) / World Love-ийн хүрээнд Энхцэцэг Ширэндэвийн санаачилга юм. · Part of MCBI / World Love.
+
+Лиценз · License: MIT
