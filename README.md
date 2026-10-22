@@ -51,6 +51,6 @@
 - UN Comtrade — https://comtradeplus.un.org
 - EITI Mongolia — https://eitimongolia.mn
 
-Энэ төсөл нь [MCBI](https://mcbis.org) / World Love-ийн хүрээнд Энхцэцэг Ширэндэвийн санаачилга юм. · Part of MCBI / World Love.
+Энэ төсөл нь [MCBI](https://mcbis.org) / World Love-ийн хүрээнд Ширэндэвийн Энхцэцэгийн санаачилга юм. · Part of MCBI / World Love.
 
 Лиценз · License: MIT
