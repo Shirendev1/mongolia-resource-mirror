@@ -8,11 +8,11 @@ MONGOLIA = 496
 
 # UN Comtrade country codes -> names (Mongolian, English)
 COUNTRIES = {
-    496: {"mn": "Монгол", "en": "Mongolia"},
-    156: {"mn": "Хятад", "en": "China"},
-    757: {"mn": "Швейцарь", "en": "Switzerland"},
-    410: {"mn": "Өмнөд Солонгос", "en": "Rep. of Korea"},
-    380: {"mn": "Итали", "en": "Italy"},
+    496: {"mn": "Монгол", "gen": "Монголын", "en": "Mongolia"},
+    156: {"mn": "Хятад", "gen": "Хятадын", "en": "China"},
+    757: {"mn": "Швейцарь", "gen": "Швейцарийн", "en": "Switzerland"},
+    410: {"mn": "Өмнөд Солонгос", "gen": "Өмнөд Солонгосын", "en": "Rep. of Korea"},
+    380: {"mn": "Итали", "gen": "Италийн", "en": "Italy"},
 }
 
 # HS code -> names and the unit used on the dashboard ("t" tonnes, "kg")

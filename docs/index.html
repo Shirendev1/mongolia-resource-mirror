@@ -111,9 +111,9 @@ const fmtN = v => v==null ? "—" : Math.round(v).toLocaleString("en-US");
 const per = p => p.length===6 ? p.slice(0,4)+"-"+p.slice(4) : p;
 
 function names(){
-  const c = DATA.countries[VIEW.partner].mn, cm = DATA.commodities[VIEW.hs];
+  const cc = DATA.countries[VIEW.partner], c = cc.mn, cm = DATA.commodities[VIEW.hs];
   const unit = cm.unit === "kg" ? {q:"кг", qd:1, p:"$/кг"} : {q:"мянган т", qd:1000, p:"$/т"};
-  return {partner:c, com:cm.mn, unit};
+  return {partner:c, gen:cc.gen||c, com:cm.mn, unit};
 }
 function flagText(f){
   const p = names().partner;
@@ -147,8 +147,8 @@ function select(v){
   document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.id===v.hs+"-"+v.partner));
   const n = names();
   document.getElementById("note").textContent = DATA.notes[v.hs] || "";
-  document.getElementById("annualNote").textContent = `Монголын экспортын мэдүүлэг ба ${n.partner}-ын импортын мэдүүлэг, сая ам.доллар. Ердийн үед импортын тоо бага зэрэг их байх ёстой (тээвэр, даатгал нэмэгддэг).`;
-  document.getElementById("monthlyNote").textContent = `${n.partner}-ын бүртгэл минус Монголын бүртгэл, сая ам.доллар. Сөрөг = ${n.partner} бага бүртгэсэн. Баар байхгүй сар = нэг тал нь өгөгдөл илгээгээгүй.`;
+  document.getElementById("annualNote").textContent = `Монголын экспортын мэдүүлэг ба ${n.gen} импортын мэдүүлэг, сая ам.доллар. Ердийн үед импортын тоо бага зэрэг их байх ёстой (тээвэр, даатгал нэмэгддэг).`;
+  document.getElementById("monthlyNote").textContent = `${n.gen} бүртгэл минус Монголын бүртгэл, сая ам.доллар. Сөрөг = ${n.partner} бага бүртгэсэн. Баар байхгүй сар = нэг тал нь өгөгдөл илгээгээгүй.`;
   const rows = DATA.rows.filter(r=>r.hs===v.hs && r.importer===v.partner);
   const A = rows.filter(r=>r.freq==="A").sort((a,b)=>a.period.localeCompare(b.period));
   const M = rows.filter(r=>r.freq==="M").sort((a,b)=>a.period.localeCompare(b.period));
@@ -171,7 +171,7 @@ function cards(A){
       <div class="s">${n.partner} − Монгол</div></div>
     <div class="card"><div class="k">Сүүлийн он (${latest?latest.period:"—"})</div>
       <div class="v">${latest?fmtM(latest.im_value ?? latest.ex_value):"—"} сая $</div>
-      <div class="s">${latest&&latest.im_value!=null?n.partner+"-ын бүртгэлээр":"Монголын бүртгэлээр"}</div></div>
+      <div class="s">${latest&&latest.im_value!=null?n.gen+" бүртгэлээр":"Монголын бүртгэлээр"}</div></div>
     <div class="card"><div class="k">Монгол илгээгээгүй жил</div>
       <div class="v">${missing.length}</div>
       <div class="s">${missing.join(", ")||"бүгд илгээсэн"}</div></div>`;
