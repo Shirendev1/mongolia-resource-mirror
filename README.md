@@ -27,12 +27,7 @@
 
 ## Тохируулах · Setup
 
-1. [comtradeplus.un.org](https://comtradeplus.un.org) дээр үнэгүй бүртгүүлж API түлхүүр авна.
-2. Репогийн **Settings → Secrets and variables → Actions → New repository secret**: нэр `COMTRADE_KEY`, утга нь таны түлхүүр.
-3. **Settings → Pages**: Source = *Deploy from a branch*, Branch = `main`, Folder = `/docs`.
-4. **Actions** табаас *Monthly data update* → *Run workflow* дарж анх удаа ажиллуулна.
-
-Түлхүүргүй үед систем НҮБ-ын нээлттэй (preview) API-г ашиглана — удаан боловч ажиллана.
+Энэ системийг өөрөө ажиллуулахыг хүсвэл info@mcbis.org хаягаар холбогдоно уу.
 
 ## Бүтээгдэхүүн нэмэх · Adding commodities
 
