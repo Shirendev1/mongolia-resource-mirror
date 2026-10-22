@@ -59,23 +59,24 @@ footer{color:var(--muted);font-size:13px;margin-top:24px}
 <div class="wrap">
 <header>
   <h1>Баялгийн толь</h1>
-  <p class="en">Mongolia Resource Mirror · Монгол–Хятадын толин худалдааны хяналт</p>
-  <p class="lede">Монгол “ийм хэмжээний баялаг гаргасан” гэж бүртгэсэн тоог Хятад “хүлээн авсан” гэж бүртгэсэн тоотой тулгана. Зөрүү гарвал асуулт тавих шалтгаан болно — шууд буруутгал биш.</p>
+  <p class="en">Mongolia Resource Mirror · Монголын экспортын толин хяналт</p>
+  <p class="lede">Монгол “ийм хэмжээний баялаг гаргасан” гэж бүртгэсэн тоог хүлээн авагч улс “хүлээн авсан” гэж бүртгэсэн тоотой тулгана. Зөрүү гарвал асуулт тавих шалтгаан болно — шууд буруутгал биш.</p>
 </header>
 
-<div class="tabs" id="tabs" role="group" aria-label="Бүтээгдэхүүн"></div>
+<div class="tabs" id="tabs" role="group" aria-label="Бүтээгдэхүүн ба улс"></div>
+<p class="note" id="note" style="margin:-4px 0 16px;color:var(--muted);font-size:14px;max-width:760px"></p>
 
 <div class="cards" id="cards"></div>
 
 <section class="panel">
   <h2>Жилийн үнийн дүн</h2>
-  <p class="note">Монголын экспортын мэдүүлэг ба Хятадын импортын мэдүүлэг, тэрбум ам.доллар. Ердийн үед Хятадын тоо бага зэрэг их байх ёстой (тээвэр, даатгал нэмэгддэг).</p>
+  <p class="note" id="annualNote"></p>
   <div class="chart"><canvas id="annual"></canvas></div>
 </section>
 
 <section class="panel" id="monthlyPanel">
   <h2>Сар бүрийн зөрүү</h2>
-  <p class="note">Хятадын бүртгэл минус Монголын бүртгэл, сая ам.доллар. Сөрөг = Хятад бага бүртгэсэн. Баар байхгүй сар = нэг тал нь өгөгдөл илгээгээгүй.</p>
+  <p class="note" id="monthlyNote"></p>
   <div class="chart"><canvas id="monthly"></canvas></div>
 </section>
 
@@ -90,8 +91,8 @@ footer{color:var(--muted);font-size:13px;margin-top:24px}
   <ul>
     <li><b>Эх сурвалж:</b> НҮБ-ын Comtrade сан — улс бүр өөрийн гаалийн мэдүүлгээ илгээдэг.</li>
     <li><b>Толин харьцуулалт:</b> нэг ачааг хоёр улс хоёр удаа бүртгэдэг. Хоёр бүртгэл зөрвөл тайлбар шаардлагатай.</li>
-    <li><b>Хэвийн зөрүүний шалтгаан:</b> оны/сарын заагаар бүртгэл шилжих, тээврийн зардал (CIF ба FOB), нойтон ба хуурай тонн, ангиллын ялгаа.</li>
-    <li><b>Хязгаарлалт:</b> “тооцоолсон жин” гэж тэмдэглэгдсэн тоог үнийн харьцуулалтад ашиглахгүй. Өгөгдөл илгээгээгүй сарыг тусад нь тэмдэглэнэ.</li>
+    <li><b>Хэвийн зөрүүний шалтгаан:</b> оны/сарын заагаар бүртгэл шилжих, тээврийн зардал (CIF ба FOB), нойтон ба хуурай тонн, гарал үүсэл ба илгээсэн улсын ялгаа, ангиллын ялгаа.</li>
+    <li><b>Хязгаарлалт:</b> “тооцоолсон жин” гэж тэмдэглэгдсэн тоог үнийн харьцуулалтад ашиглахгүй. Өгөгдөл илгээгээгүй хугацааг тусад нь тэмдэглэнэ.</li>
   </ul>
 </section>
 
@@ -102,51 +103,60 @@ footer{color:var(--muted);font-size:13px;margin-top:24px}
 </div>
 
 <script>
-const FLAG = {
-  VALUE_GAP:["Үнийн дүн зөрүүтэй","Value gap"],
-  IMPORT_BELOW:["Хятад бага бүртгэсэн","Importer below exporter"],
-  WEIGHT_GAP:["Тонн зөрүүтэй","Weight gap"],
-  PRICE_GAP:["Тонн тутмын үнэ зөрүүтэй","Price gap"],
-  ESTIMATED_WEIGHT:["Жин тооцоолсон","Estimated weight"],
-  MISSING_EXPORTER:["Монгол илгээгээгүй","Exporter missing"],
-  MISSING_IMPORTER:["Хятад илгээгээгүй","Importer missing"],
-};
-const GREY = new Set(["ESTIMATED_WEIGHT","MISSING_EXPORTER","MISSING_IMPORTER"]);
+let DATA, VIEW, charts = {};
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const fmtB = v => v==null ? "—" : (v/1e9).toFixed(2);
-const fmtMt = v => v==null ? "—" : (v/1e6).toFixed(2);
-const fmtP = v => v==null ? "—" : Math.round(v).toLocaleString("en-US");
+const fmtM = v => v==null ? "—" : (v/1e6).toLocaleString("en-US",{maximumFractionDigits:1});
 const fmtPct = v => v==null ? "—" : (v>0?"+":"")+v.toFixed(1)+"%";
-let DATA, HS, charts = {};
+const fmtN = v => v==null ? "—" : Math.round(v).toLocaleString("en-US");
+const per = p => p.length===6 ? p.slice(0,4)+"-"+p.slice(4) : p;
+
+function names(){
+  const c = DATA.countries[VIEW.partner].mn, cm = DATA.commodities[VIEW.hs];
+  const unit = cm.unit === "kg" ? {q:"кг", qd:1, p:"$/кг"} : {q:"мянган т", qd:1000, p:"$/т"};
+  return {partner:c, com:cm.mn, unit};
+}
+function flagText(f){
+  const p = names().partner;
+  return ({
+    VALUE_GAP:"Үнийн дүн зөрүүтэй", IMPORT_BELOW:p+" бага бүртгэсэн", IMPORT_ABOVE:p+" илүү бүртгэсэн",
+    WEIGHT_GAP:"Хэмжээ зөрүүтэй", PRICE_GAP:"Нэгжийн үнэ зөрүүтэй", ESTIMATED_WEIGHT:"Жин тооцоолсон",
+    MISSING_EXPORTER:"Монгол илгээгээгүй", MISSING_IMPORTER:p+" илгээгээгүй", IMPORTER_ZERO:p+" огт бүртгээгүй"
+  })[f] || f;
+}
+const GREY = new Set(["ESTIMATED_WEIGHT","MISSING_EXPORTER","MISSING_IMPORTER","VALUE_GAP"]);
 
 fetch("data/mirror.json").then(r=>r.json()).then(d=>{
   DATA = d;
   document.getElementById("gen").textContent = d.generated;
   const tabs = document.getElementById("tabs");
-  const order = d.commodity_order || Object.keys(d.commodities);
-  order.forEach(hs=>{ const n = d.commodities[hs];
+  d.views.forEach(v=>{
     const b = document.createElement("button");
-    b.textContent = n.mn; b.title = n.en+" (HS "+hs+")";
-    b.onclick = ()=>select(hs);
-    b.dataset.hs = hs; tabs.appendChild(b);
+    b.textContent = d.commodities[v.hs].mn + " · " + d.countries[v.partner].mn;
+    b.title = d.commodities[v.hs].en + " → " + d.countries[v.partner].en + " (HS " + v.hs + ")";
+    b.dataset.id = v.hs+"-"+v.partner; b.onclick = ()=>select(v); tabs.appendChild(b);
   });
-  let saved = null; try { saved = localStorage.getItem("hs"); } catch(e) {}
-  select(d.commodities[saved] ? saved : order[0]);
+  let saved = null; try { saved = localStorage.getItem("view"); } catch(e) {}
+  select(d.views.find(v=>v.hs+"-"+v.partner===saved) || d.views[0]);
 }).catch(()=>{
   document.getElementById("cards").innerHTML = '<div class="card">Өгөгдөл ачаалж чадсангүй. Хуудсыг вэб сервер (GitHub Pages) дээрээс нээнэ үү.</div>';
 });
 
-function select(hs){
-  HS = hs;
-  try { localStorage.setItem("hs", hs); } catch(e) {}
-  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.hs===hs));
-  const rows = DATA.rows.filter(r=>r.hs===hs);
+function select(v){
+  VIEW = v;
+  try { localStorage.setItem("view", v.hs+"-"+v.partner); } catch(e) {}
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.id===v.hs+"-"+v.partner));
+  const n = names();
+  document.getElementById("note").textContent = DATA.notes[v.hs] || "";
+  document.getElementById("annualNote").textContent = `Монголын экспортын мэдүүлэг ба ${n.partner}-ын импортын мэдүүлэг, сая ам.доллар. Ердийн үед импортын тоо бага зэрэг их байх ёстой (тээвэр, даатгал нэмэгддэг).`;
+  document.getElementById("monthlyNote").textContent = `${n.partner}-ын бүртгэл минус Монголын бүртгэл, сая ам.доллар. Сөрөг = ${n.partner} бага бүртгэсэн. Баар байхгүй сар = нэг тал нь өгөгдөл илгээгээгүй.`;
+  const rows = DATA.rows.filter(r=>r.hs===v.hs && r.importer===v.partner);
   const A = rows.filter(r=>r.freq==="A").sort((a,b)=>a.period.localeCompare(b.period));
   const M = rows.filter(r=>r.freq==="M").sort((a,b)=>a.period.localeCompare(b.period));
   cards(A); annual(A); monthly(M); table(A, M);
 }
 
 function cards(A){
+  const n = names();
   const paired = A.filter(r=>r.gap_value!=null);
   const worst = paired.reduce((w,r)=>(!w||Math.abs(r.gap_value)>Math.abs(w.gap_value))?r:w, null);
   const total = paired.reduce((s,r)=>s+r.gap_value,0);
@@ -155,13 +165,13 @@ function cards(A){
   document.getElementById("cards").innerHTML = `
     <div class="card"><div class="k">Хамгийн их зөрүүтэй он</div>
       <div class="v ${worst&&worst.gap_value<0?'neg':''}">${worst?worst.period:"—"}</div>
-      <div class="s">${worst?((worst.gap_value/1e6).toFixed(0)+" сая $ ("+fmtPct(worst.gap_value_pct)+")"):""}</div></div>
+      <div class="s">${worst?(fmtM(worst.gap_value)+" сая $ ("+fmtPct(worst.gap_value_pct)+")"):""}</div></div>
     <div class="card"><div class="k">Нийт зөрүү (${paired.length} он)</div>
-      <div class="v ${total<0?'neg':''}">${(total/1e6).toFixed(0)} сая $</div>
-      <div class="s">Хятад − Монгол</div></div>
+      <div class="v ${total<0?'neg':''}">${fmtM(total)} сая $</div>
+      <div class="s">${n.partner} − Монгол</div></div>
     <div class="card"><div class="k">Сүүлийн он (${latest?latest.period:"—"})</div>
-      <div class="v">${latest?fmtB(latest.im_value ?? latest.ex_value):"—"} тэрбум $</div>
-      <div class="s">${latest&&latest.im_value!=null?"Хятадын бүртгэлээр":"Монголын бүртгэлээр"}</div></div>
+      <div class="v">${latest?fmtM(latest.im_value ?? latest.ex_value):"—"} сая $</div>
+      <div class="s">${latest&&latest.im_value!=null?n.partner+"-ын бүртгэлээр":"Монголын бүртгэлээр"}</div></div>
     <div class="card"><div class="k">Монгол илгээгээгүй жил</div>
       <div class="v">${missing.length}</div>
       <div class="s">${missing.join(", ")||"бүгд илгээсэн"}</div></div>`;
@@ -173,43 +183,41 @@ function baseOpts(){
     scales:{x:{ticks:{color:css("--muted")},grid:{color:css("--line")}},
             y:{ticks:{color:css("--muted")},grid:{color:css("--line")}}}};
 }
-
 function annual(A){
   charts.a && charts.a.destroy();
   charts.a = new Chart(document.getElementById("annual"), {type:"bar",
     data:{labels:A.map(r=>r.period), datasets:[
-      {label:"Монгол: экспорт", data:A.map(r=>r.ex_value&&r.ex_value/1e9), backgroundColor:css("--mn")},
-      {label:"Хятад: импорт", data:A.map(r=>r.im_value&&r.im_value/1e9), backgroundColor:css("--cn")}]},
+      {label:"Монгол: экспорт", data:A.map(r=>r.ex_value&&r.ex_value/1e6), backgroundColor:css("--mn")},
+      {label:names().partner+": импорт", data:A.map(r=>r.im_value==null?(r.flags.includes("IMPORTER_ZERO")?0:null):r.im_value/1e6), backgroundColor:css("--cn")}]},
     options:baseOpts()});
 }
-
 function monthly(M){
   const panel = document.getElementById("monthlyPanel");
   if(!M.length){ panel.style.display="none"; return; }
   panel.style.display="";
   charts.m && charts.m.destroy();
   charts.m = new Chart(document.getElementById("monthly"), {type:"bar",
-    data:{labels:M.map(r=>r.period.slice(0,4)+"-"+r.period.slice(4)), datasets:[
+    data:{labels:M.map(r=>per(r.period)), datasets:[
       {label:"Зөрүү (сая $)", data:M.map(r=>r.gap_value==null?null:r.gap_value/1e6),
        backgroundColor:M.map(r=>r.gap_value<0?css("--cn"):css("--ok"))}]},
     options:{...baseOpts(), plugins:{legend:{display:false}}}});
 }
-
 function chips(flags){
-  return flags.map(f=>`<span class="chip ${GREY.has(f)?'grey':''}" title="${FLAG[f]?.[1]||f}">${FLAG[f]?.[0]||f}</span>`).join("") || '<span class="chip grey">Хэвийн</span>';
+  return flags.map(f=>`<span class="chip ${GREY.has(f)?'grey':''}">${flagText(f)}</span>`).join("") || '<span class="chip grey">Хэвийн</span>';
 }
-
 function table(A, M){
-  const rows = [...A, ...M.filter(r=>r.flags.length)];
+  const n = names(), u = n.unit;
+  const q = v => v==null ? "—" : fmtN(v/u.qd);
+  const rows = [...A, ...M.filter(r=>r.flags.some(f=>!GREY.has(f)))];
   document.getElementById("table").innerHTML = `
-    <thead><tr><th>Хугацаа</th><th>Монгол, тэрбум $</th><th>Хятад, тэрбум $</th><th>Зөрүү</th>
-    <th>Монгол, сая т</th><th>Хятад, сая т</th><th>Монгол $/т</th><th>Хятад $/т</th><th class="flags">Тэмдэг</th></tr></thead>
+    <thead><tr><th>Хугацаа</th><th>Монгол, сая $</th><th>${n.partner}, сая $</th><th>Зөрүү</th>
+    <th>Монгол, ${u.q}</th><th>${n.partner}, ${u.q}</th><th>Монгол ${u.p}</th><th>${n.partner} ${u.p}</th><th class="flags">Тэмдэг</th></tr></thead>
     <tbody>${rows.map(r=>`<tr>
-      <td>${r.freq==="M"?r.period.slice(0,4)+"-"+r.period.slice(4):r.period}</td>
-      <td class="mono">${fmtB(r.ex_value)}</td><td class="mono">${fmtB(r.im_value)}</td>
+      <td>${per(r.period)}</td>
+      <td class="mono">${fmtM(r.ex_value)}</td><td class="mono">${r.flags.includes("IMPORTER_ZERO")?"0":fmtM(r.im_value)}</td>
       <td class="mono ${r.gap_value_pct<0?'neg':''}">${fmtPct(r.gap_value_pct)}</td>
-      <td class="mono">${fmtMt(r.ex_tonnes)}</td><td class="mono">${fmtMt(r.im_tonnes)}</td>
-      <td class="mono">${fmtP(r.ex_price)}</td><td class="mono">${fmtP(r.im_price)}</td>
+      <td class="mono">${q(r.ex_qty)}</td><td class="mono">${q(r.im_qty)}</td>
+      <td class="mono">${fmtN(r.ex_price)}</td><td class="mono">${fmtN(r.im_price)}</td>
       <td class="flags">${chips(r.flags)}</td></tr>`).join("")}</tbody>`;
 }
 </script>
