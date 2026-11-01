@@ -1,0 +1,6 @@
+batch_id,mine_id,declared_at,product,tonnes,Cu_pct,Mo_pct,Au_gpt,Ag_gpt,Fe_pct,Zn_pct,REE_ppm,export_ref
+B001,DEMO-A,2026-10-02,Зэсийн баяжмал,3000,25.0,0.3,5.2,47,,,,DEMO-EX-001
+B002,DEMO-A,2026-10-04,Зэсийн баяжмал,3000,24.8,,,,,,,DEMO-EX-002
+B003,DEMO-A,2026-10-06,Зэсийн баяжмал,2800,21.0,0.3,3.8,50,,,,DEMO-EX-003
+B004,DEMO-B,2026-10-08,Төмрийн хүдэр,52000,,,,,62.0,,,DEMO-EX-004
+B005,DEMO-B,2026-10-10,Төмрийн хүдэр,48000,,,,,58.0,,,DEMO-EX-005

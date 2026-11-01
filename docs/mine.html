@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Уурхайн гарцын бүртгэл · Баялгийн толь</title>
+<meta name="description" content="Уурхайгаас гарч буй хүдэр, баяжмалын найрлагыг хэмжиж, засварлах боломжгүй бүртгэлд хадгалж, компанийн мэдүүлэгтэй тулгах систем · Mine-output registry">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ef; --panel:#ffffff; --ink:#1d1f22; --muted:#5f646b; --line:#e2ded5;
+  --mn:#1f5f8b; --bad:#c0392b; --gap:#b7791f; --ok:#2f7d4f; --flag-bg:#fbeee4; --demo:#fff4cc;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#15171a; --panel:#1e2125; --ink:#eceae5; --muted:#a3a7ad; --line:#30343a;
+    --mn:#6aaee0; --bad:#ef7a6c; --gap:#e0b04f; --ok:#6cc690; --flag-bg:#3a2a20; --demo:#3a3420;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+a{color:var(--mn)}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 16px 64px}
+header h1{font-size:clamp(26px,5vw,36px);margin:0 0 4px;letter-spacing:-.01em}
+header .en{color:var(--muted);margin:0 0 12px}
+header p.lede{max-width:740px;margin:0}
+nav{margin:0 0 16px;font-size:14px}
+.demo{background:var(--demo);border:1px solid var(--gap);border-radius:12px;padding:12px 16px;margin:20px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:20px 0 16px}
+.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card .k{color:var(--muted);font-size:13px}
+.card .v{font:500 26px/1.2 "IBM Plex Mono",monospace;margin-top:4px}
+.card .s{font-size:13px;color:var(--muted);margin-top:4px}
+.v.ok{color:var(--ok)} .v.bad{color:var(--bad)}
+.panel{margin-bottom:16px}
+.panel h2{font-size:18px;margin:0 0 4px}
+.panel p.note{color:var(--muted);font-size:14px;margin:0 0 12px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:top}
+th.l,td.l{text-align:left}
+td.flags{white-space:normal;min-width:200px;text-align:left}
+th{color:var(--muted);font-weight:500}
+.tbl{overflow-x:auto}
+.chip{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--flag-bg);color:var(--gap);margin:2px 4px 2px 0}
+.chip.ok{background:transparent;border:1px solid var(--line);color:var(--ok)}
+.chip.bad{color:var(--bad)}
+.batch{border-top:1px solid var(--line);padding:12px 0}
+.batch .top{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.batch .meta{color:var(--muted);font-size:14px}
+details{margin-top:6px}
+.sub{width:auto;min-width:100%}
+summary{cursor:pointer;color:var(--mn);font-size:13px}
+.sub{margin-top:8px;font-size:13px}
+.sub td,.sub th{padding:4px 6px}
+.neg{color:var(--bad);font-weight:500}
+.mono{font-family:"IBM Plex Mono",monospace}
+.hash{font-family:"IBM Plex Mono",monospace;font-size:12px;word-break:break-all;color:var(--muted)}
+.method li{margin-bottom:6px}
+footer{color:var(--muted);font-size:13px;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav><a href="index.html">← Экспортын толин хяналт</a></nav>
+<header>
+  <h1>Уурхайн гарцын бүртгэл</h1>
+  <p class="en">Mine-output registry · what leaves the mine, measured and locked</p>
+  <p class="lede">Уурхайгаас гарч буй хүдэр, баяжмалын багц бүрийн найрлагыг төхөөрөмжөөр хэмжиж, хэн ч засах боломжгүй бүртгэлд хадгална. Дараа нь компанийн мэдүүлэгтэй тулгаж, мэдүүлээгүй эсвэл бага мэдүүлсэн элементийг илрүүлнэ.</p>
+</header>
+
+<div class="demo" id="demo" hidden><b>Жишээ өгөгдөл.</b> Энэ хуудсанд байгаа уурхай, тоо бүгд системийг турших зорилгоор зохиосон жишээ бөгөөд бодит компанийг илэрхийлэхгүй.</div>
+
+<div class="cards" id="cards"></div>
+
+<section class="panel">
+  <h2>Мэдүүлгээс гадуур үлдсэн агууламж</h2>
+  <p class="note">Хэмжилтээр илэрсэн боловч мэдүүлээгүй эсвэл бага мэдүүлсэн металлын нийт хэмжээ (бүх багцаар).</p>
+  <div class="tbl"><table id="totals"></table></div>
+</section>
+
+<section class="panel">
+  <h2>Багцууд</h2>
+  <p class="note">Тэмдэг бүр нь шалгах ёстой асуулт юм. “Дэлгэрэнгүй” дээр дарж хэмжилт ба мэдүүлгийг харьцуулна.</p>
+  <div id="batches"></div>
+</section>
+
+<section class="panel">
+  <h2>Бүртгэлийн бүрэн бүтэн байдал</h2>
+  <p class="note">Бичилт бүр өмнөх бичилтийнхээ SHA-256 “хурууны хээ”-г агуулдаг. Хуучин бичилтийг өөрчилбөл дараагийн бүх хээ таарахгүй болж, систем шууд илрүүлнэ.</p>
+  <div id="ledger"></div>
+</section>
+
+<section class="panel method">
+  <h2>Арга зүй</h2>
+  <ul>
+    <li><b>Хэмжилт:</b> конвейер дээрх анализатор (PGNAA, LIBS), гар XRF төхөөрөмж эсвэл лаборатори. Хэмжилт бүрд хэн хийсэн (компани, хараат бус байгууллага, гааль) гэдгийг тэмдэглэнэ.</li>
+    <li><b>Жишиг:</b> хараат бус хэмжилт байвал түүнийг жишиг болгоно. Зөвхөн компани хэмжсэн бол “хараат бус дээжгүй” гэж тэмдэглэнэ.</li>
+    <li><b>Түгжих:</b> бүртгэлд орсон мөрийг дараа нь эх файлд өөрчилбөл систем “бүртгэлийн дараа засварласан” гэж тэмдэглэж, анхны утгыг хадгална.</li>
+    <li><b>Хэвийн зөрүүний шалтгаан:</b> дээж авах аргын ялгаа, чийг, төхөөрөмжийн нарийвчлал. Тиймээс бага зөрүүг тэмдэглэхгүй (босго доор харуулсан).</li>
+  </ul>
+  <p class="note" id="thresholds"></p>
+</section>
+
+<footer>
+  <div>Шинэчилсэн: <span id="gen" class="mono"></span></div>
+  <div>Нээлттэй эх код. Тэмдэг нь буруутгал биш — тайлбар шаардах асуулт юм. · MCBI / World Love</div>
+</footer>
+</div>
+
+<script>
+const FLAGS = {
+  UNDECLARED_ELEMENT: "Мэдүүлээгүй элемент",
+  DECLARED_BELOW: "Агууламжийг бага мэдүүлсэн",
+  SOURCE_GAP: "Компани ба хараат бус хэмжилт зөрсөн",
+  TONNAGE_GAP: "Тонн зөрүүтэй",
+  NO_INDEPENDENT_SAMPLE: "Хараат бус дээжгүй",
+  NO_DECLARATION: "Мэдүүлэггүй",
+  NO_MEASUREMENT: "Хэмжилтгүй",
+  EDITED_AFTER_LEDGER: "Бүртгэлийн дараа засварласан",
+};
+const SEVERE = new Set(["UNDECLARED_ELEMENT","DECLARED_BELOW","EDITED_AFTER_LEDGER"]);
+const BY = {company:"Компани", independent:"Хараат бус", customs:"Гааль"};
+const fmt = (v, d=1) => v==null ? "—" : Number(v).toLocaleString("en-US",{maximumFractionDigits:d});
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+fetch("data/mine.json").then(r => r.json()).then(D => {
+  const E = D.elements;
+  document.getElementById("demo").hidden = !D.demo;
+  document.getElementById("gen").textContent = D.generated;
+  const flagged = D.batches.filter(b => b.flags.length);
+  const au = D.totals_gap.Au_gpt;
+
+  document.getElementById("cards").innerHTML = [
+    ["Нийт багц", D.batches.length, "бүртгэлд орсон"],
+    ["Тэмдэглэгдсэн багц", flagged.length, "шалгах шаардлагатай"],
+    ["Мэдүүлээгүй алт", au ? fmt(au)+" кг" : "0", "хэмжилтээр илэрсэн"],
+    ["Бүртгэлийн төлөв", D.ledger.ok ? "Бүрэн" : "Эвдэрсэн", D.ledger.entries+" бичилт", D.ledger.ok ? "ok" : "bad"],
+  ].map(([k,v,s,c]) => `<div class="card"><div class="k">${k}</div><div class="v ${c||""}">${v}</div><div class="s">${s}</div></div>`).join("");
+
+  const tot = Object.entries(D.totals_gap);
+  document.getElementById("totals").innerHTML = tot.length
+    ? `<tr><th class="l">Элемент</th><th>Хэмжээ</th></tr>` + tot.map(([el,v]) =>
+        `<tr><td class="l">${E[el].mn}</td><td class="mono">${fmt(v)} ${E[el].contained_unit}</td></tr>`).join("")
+    : `<tr><td class="l">Зөрүү илрээгүй.</td></tr>`;
+
+  const grade = (o, el) => o && o[el]!=null ? fmt(o[el], 3) : "—";
+  document.getElementById("batches").innerHTML =
+    D.batches.map(b => {
+      const chips = b.flags.length
+        ? b.flags.map(f => `<span class="chip ${SEVERE.has(f)?"bad":""}">${FLAGS[f]||f}</span>`).join("")
+        : `<span class="chip ok">Зөрүүгүй</span>`;
+      const els = Object.keys(E).filter(el =>
+        [b.independent, b.company, b.declared].some(o => o && o[el]!=null));
+      const gapEls = new Set(b.gaps.map(g => g.element));
+      const cmp = `<div class="tbl"><table class="sub"><tr><th class="l">Элемент</th><th>Хараат бус</th><th>Компани</th><th>Мэдүүлсэн</th><th>Зөрүүт агууламж</th></tr>` +
+        els.map(el => {
+          const g = b.gaps.find(x => x.element===el);
+          return `<tr><td class="l">${E[el].mn} (${E[el].unit})</td><td>${grade(b.independent,el)}</td><td>${grade(b.company,el)}</td>` +
+            `<td class="${gapEls.has(el)?"neg":""}">${grade(b.declared,el)}</td><td class="${g?"neg":""}">${g ? fmt(g.contained_gap)+" "+E[el].contained_unit : "—"}</td></tr>`;
+        }).join("") + `</table></div>` +
+        `<div class="tbl"><table class="sub"><tr><th class="l">Хэмжилт</th><th class="l">Арга</th><th class="l">Хэн</th><th class="l">Төхөөрөмж</th><th class="l">Огноо</th></tr>` +
+        b.measurements.map(m => `<tr><td class="l mono">${esc(m.id)}</td><td class="l">${esc(D.methods[m.method]||m.method)}</td><td class="l">${esc(BY[m.by]||m.by)}</td><td class="l">${esc(m.device)}</td><td class="l mono">${esc(m.at)}</td></tr>`).join("") +
+        `</table></div>`;
+      return `<div class="batch"><div class="top"><b class="mono">${esc(b.batch_id)}</b><span>${esc(b.product||"—")}</span><span class="meta mono">${fmt(b.tonnes,0)} т</span><span class="meta">${esc(b.mine)}</span></div>` +
+        `<div>${chips}</div><details><summary>Дэлгэрэнгүй</summary>${cmp}</details></div>`;
+    }).join("");
+
+  document.getElementById("ledger").innerHTML = D.ledger.ok
+    ? `<p><span class="chip ok">Шалгалт амжилттай</span> ${D.ledger.entries} бичилт, нэг ч өөрчлөлт илрээгүй.</p><p class="note">Сүүлийн хээ:</p><div class="hash">${esc(D.ledger.head||"—")}</div>`
+    : `<p><span class="chip bad">Бүртгэл эвдэрсэн</span> ${D.ledger.broken_at}-р бичилтээс эхлэн өөрчлөлт илэрлээ.</p>`;
+
+  const t = D.thresholds;
+  document.getElementById("thresholds").textContent =
+    `Босго: агууламжийг ${t.grade_gap_pct}%-аас их бага мэдүүлсэн; компани ба хараат бус хэмжилт ${t.source_gap_pct}%-аас их зөрсөн; тонн ${t.tonnage_gap_pct}%-аас их зөрсөн. Мэдүүлэх ёстой доод агууламж: ` +
+    Object.entries(t.declare).map(([el,v]) => `${E[el].mn} ${v} ${E[el].unit}`).join(", ") + ".";
+});
+</script>
+</body>
+</html>

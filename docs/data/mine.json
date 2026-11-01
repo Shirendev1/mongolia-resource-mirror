@@ -1,0 +1,387 @@
+{
+ "generated": "2026-11-01",
+ "demo": true,
+ "ledger": {
+  "entries": 13,
+  "ok": true,
+  "broken_at": null,
+  "head": "d3de041da561d31cc37d84618b18aff8d64ed4727b04c8fb15b5cae0eedb6413"
+ },
+ "elements": {
+  "Cu_pct": {
+   "mn": "Зэс",
+   "en": "Copper",
+   "unit": "%",
+   "factor": 0.01,
+   "contained_unit": "т"
+  },
+  "Mo_pct": {
+   "mn": "Молибден",
+   "en": "Molybdenum",
+   "unit": "%",
+   "factor": 0.01,
+   "contained_unit": "т"
+  },
+  "Au_gpt": {
+   "mn": "Алт",
+   "en": "Gold",
+   "unit": "г/т",
+   "factor": 0.001,
+   "contained_unit": "кг"
+  },
+  "Ag_gpt": {
+   "mn": "Мөнгө",
+   "en": "Silver",
+   "unit": "г/т",
+   "factor": 0.001,
+   "contained_unit": "кг"
+  },
+  "Fe_pct": {
+   "mn": "Төмөр",
+   "en": "Iron",
+   "unit": "%",
+   "factor": 0.01,
+   "contained_unit": "т"
+  },
+  "Zn_pct": {
+   "mn": "Цайр",
+   "en": "Zinc",
+   "unit": "%",
+   "factor": 0.01,
+   "contained_unit": "т"
+  },
+  "REE_ppm": {
+   "mn": "Газрын ховор элемент",
+   "en": "Rare earths (total)",
+   "unit": "ppm",
+   "factor": 0.001,
+   "contained_unit": "кг"
+  }
+ },
+ "methods": {
+  "PGNAA": "Конвейер дээрх нейтрон анализатор (PGNAA)",
+  "LIBS": "Лазер анализатор (LIBS)",
+  "XRF_HANDHELD": "Гар XRF төхөөрөмж",
+  "LAB": "Лабораторийн шинжилгээ"
+ },
+ "thresholds": {
+  "declare": {
+   "Cu_pct": 0.5,
+   "Mo_pct": 0.05,
+   "Au_gpt": 0.5,
+   "Ag_gpt": 10.0,
+   "Fe_pct": 20.0,
+   "Zn_pct": 1.0,
+   "REE_ppm": 500.0
+  },
+  "grade_gap_pct": 10.0,
+  "source_gap_pct": 10.0,
+  "tonnage_gap_pct": 3.0
+ },
+ "mines": {
+  "DEMO-A": {
+   "mine_id": "DEMO-A",
+   "name_mn": "Жишээ зэс-алтны уурхай",
+   "name_en": "Demo copper-gold mine",
+   "license_no": "DEMO-0001",
+   "company": "Жишээ ХХК",
+   "demo": "yes"
+  },
+  "DEMO-B": {
+   "mine_id": "DEMO-B",
+   "name_mn": "Жишээ төмрийн хүдрийн уурхай",
+   "name_en": "Demo iron ore mine",
+   "license_no": "DEMO-0002",
+   "company": "Жишээ Майнинг ХХК",
+   "demo": "yes"
+  }
+ },
+ "totals_gap": {
+  "Mo_pct": 6.0,
+  "Au_gpt": 22.76,
+  "Ag_gpt": 156.0,
+  "Cu_pct": 128.8,
+  "Zn_pct": 800.0,
+  "REE_ppm": 45000.0
+ },
+ "batches": [
+  {
+   "batch_id": "B001",
+   "mine_id": "DEMO-A",
+   "mine": "Жишээ зэс-алтны уурхай",
+   "product": "Зэсийн баяжмал",
+   "export_ref": "DEMO-EX-001",
+   "tonnes": 3000.0,
+   "measurements": [
+    {
+     "id": "M001",
+     "at": "2026-10-01T08:00",
+     "method": "PGNAA",
+     "by": "company",
+     "device": "Belt analyser #1",
+     "grades": {
+      "Cu_pct": 24.8,
+      "Mo_pct": 0.3,
+      "Au_gpt": 5.1
+     }
+    },
+    {
+     "id": "M002",
+     "at": "2026-10-01T10:30",
+     "method": "LAB",
+     "by": "independent",
+     "device": "Independent lab (demo)",
+     "grades": {
+      "Cu_pct": 25.1,
+      "Mo_pct": 0.3,
+      "Au_gpt": 5.3,
+      "Ag_gpt": 48.0
+     }
+    }
+   ],
+   "independent": {
+    "Cu_pct": 25.1,
+    "Mo_pct": 0.3,
+    "Au_gpt": 5.3,
+    "Ag_gpt": 48.0,
+    "tonnes": 3000.0
+   },
+   "company": {
+    "Cu_pct": 24.8,
+    "Mo_pct": 0.3,
+    "Au_gpt": 5.1,
+    "tonnes": 3000.0
+   },
+   "declared": {
+    "Cu_pct": 25.0,
+    "Mo_pct": 0.3,
+    "Au_gpt": 5.2,
+    "Ag_gpt": 47.0
+   },
+   "gaps": [],
+   "flags": []
+  },
+  {
+   "batch_id": "B002",
+   "mine_id": "DEMO-A",
+   "mine": "Жишээ зэс-алтны уурхай",
+   "product": "Зэсийн баяжмал",
+   "export_ref": "DEMO-EX-002",
+   "tonnes": 3000.0,
+   "measurements": [
+    {
+     "id": "M003",
+     "at": "2026-10-03T08:00",
+     "method": "PGNAA",
+     "by": "company",
+     "device": "Belt analyser #1",
+     "grades": {
+      "Cu_pct": 24.5
+     }
+    },
+    {
+     "id": "M004",
+     "at": "2026-10-03T09:15",
+     "method": "LIBS",
+     "by": "independent",
+     "device": "Laser analyser (demo)",
+     "grades": {
+      "Cu_pct": 24.9,
+      "Mo_pct": 0.2,
+      "Au_gpt": 6.0,
+      "Ag_gpt": 52.0
+     }
+    }
+   ],
+   "independent": {
+    "Cu_pct": 24.9,
+    "Mo_pct": 0.2,
+    "Au_gpt": 6.0,
+    "Ag_gpt": 52.0,
+    "tonnes": 3000.0
+   },
+   "company": {
+    "Cu_pct": 24.5,
+    "tonnes": 3000.0
+   },
+   "declared": {
+    "Cu_pct": 24.8
+   },
+   "gaps": [
+    {
+     "element": "Mo_pct",
+     "measured": 0.2,
+     "declared": null,
+     "contained_gap": 6.0
+    },
+    {
+     "element": "Au_gpt",
+     "measured": 6.0,
+     "declared": null,
+     "contained_gap": 18.0
+    },
+    {
+     "element": "Ag_gpt",
+     "measured": 52.0,
+     "declared": null,
+     "contained_gap": 156.0
+    }
+   ],
+   "flags": [
+    "UNDECLARED_ELEMENT"
+   ]
+  },
+  {
+   "batch_id": "B003",
+   "mine_id": "DEMO-A",
+   "mine": "Жишээ зэс-алтны уурхай",
+   "product": "Зэсийн баяжмал",
+   "export_ref": "DEMO-EX-003",
+   "tonnes": 2800.0,
+   "measurements": [
+    {
+     "id": "M005",
+     "at": "2026-10-05T08:00",
+     "method": "XRF_HANDHELD",
+     "by": "company",
+     "device": "Company handheld XRF",
+     "grades": {
+      "Cu_pct": 21.0,
+      "Au_gpt": 3.8
+     }
+    },
+    {
+     "id": "M006",
+     "at": "2026-10-05T14:00",
+     "method": "LAB",
+     "by": "independent",
+     "device": "Independent lab (demo)",
+     "grades": {
+      "Cu_pct": 25.6,
+      "Mo_pct": 0.3,
+      "Au_gpt": 5.5,
+      "Ag_gpt": 50.0
+     }
+    }
+   ],
+   "independent": {
+    "Cu_pct": 25.6,
+    "Mo_pct": 0.3,
+    "Au_gpt": 5.5,
+    "Ag_gpt": 50.0,
+    "tonnes": 2800.0
+   },
+   "company": {
+    "Cu_pct": 21.0,
+    "Au_gpt": 3.8,
+    "tonnes": 2800.0
+   },
+   "declared": {
+    "Cu_pct": 21.0,
+    "Mo_pct": 0.3,
+    "Au_gpt": 3.8,
+    "Ag_gpt": 50.0
+   },
+   "gaps": [
+    {
+     "element": "Cu_pct",
+     "measured": 25.6,
+     "declared": 21.0,
+     "contained_gap": 128.8
+    },
+    {
+     "element": "Au_gpt",
+     "measured": 5.5,
+     "declared": 3.8,
+     "contained_gap": 4.76
+    }
+   ],
+   "flags": [
+    "SOURCE_GAP",
+    "DECLARED_BELOW"
+   ]
+  },
+  {
+   "batch_id": "B004",
+   "mine_id": "DEMO-B",
+   "mine": "Жишээ төмрийн хүдрийн уурхай",
+   "product": "Төмрийн хүдэр",
+   "export_ref": "DEMO-EX-004",
+   "tonnes": 52000.0,
+   "measurements": [
+    {
+     "id": "M007",
+     "at": "2026-10-07T08:00",
+     "method": "PGNAA",
+     "by": "company",
+     "device": "Belt analyser #2",
+     "grades": {
+      "Fe_pct": 62.1
+     }
+    }
+   ],
+   "independent": null,
+   "company": {
+    "Fe_pct": 62.1,
+    "tonnes": 52000.0
+   },
+   "declared": {
+    "Fe_pct": 62.0
+   },
+   "gaps": [],
+   "flags": [
+    "NO_INDEPENDENT_SAMPLE"
+   ]
+  },
+  {
+   "batch_id": "B005",
+   "mine_id": "DEMO-B",
+   "mine": "Жишээ төмрийн хүдрийн уурхай",
+   "product": "Төмрийн хүдэр",
+   "export_ref": "DEMO-EX-005",
+   "tonnes": 50000.0,
+   "measurements": [
+    {
+     "id": "M008",
+     "at": "2026-10-09T08:00",
+     "method": "XRF_HANDHELD",
+     "by": "customs",
+     "device": "Border post XRF (demo)",
+     "grades": {
+      "Fe_pct": 58.4,
+      "Zn_pct": 1.6,
+      "REE_ppm": 900.0
+     }
+    }
+   ],
+   "independent": {
+    "Fe_pct": 58.4,
+    "Zn_pct": 1.6,
+    "REE_ppm": 900.0,
+    "tonnes": 50000.0
+   },
+   "company": null,
+   "declared": {
+    "Fe_pct": 58.0
+   },
+   "gaps": [
+    {
+     "element": "Zn_pct",
+     "measured": 1.6,
+     "declared": null,
+     "contained_gap": 800.0
+    },
+    {
+     "element": "REE_ppm",
+     "measured": 900.0,
+     "declared": null,
+     "contained_gap": 45000.0
+    }
+   ],
+   "flags": [
+    "TONNAGE_GAP",
+    "UNDECLARED_ELEMENT"
+   ]
+  }
+ ]
+}

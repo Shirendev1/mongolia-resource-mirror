@@ -1,0 +1,9 @@
+measurement_id,batch_id,mine_id,measured_at,method,measured_by,lab_or_device,tonnes,Cu_pct,Mo_pct,Au_gpt,Ag_gpt,Fe_pct,Zn_pct,REE_ppm
+M001,B001,DEMO-A,2026-10-01T08:00,PGNAA,company,Belt analyser #1,3000,24.8,0.3,5.1,,,,
+M002,B001,DEMO-A,2026-10-01T10:30,LAB,independent,Independent lab (demo),3000,25.1,0.3,5.3,48,,,
+M003,B002,DEMO-A,2026-10-03T08:00,PGNAA,company,Belt analyser #1,3000,24.5,,,,,,
+M004,B002,DEMO-A,2026-10-03T09:15,LIBS,independent,Laser analyser (demo),3000,24.9,0.2,6.0,52,,,
+M005,B003,DEMO-A,2026-10-05T08:00,XRF_HANDHELD,company,Company handheld XRF,2800,21.0,,3.8,,,,
+M006,B003,DEMO-A,2026-10-05T14:00,LAB,independent,Independent lab (demo),2800,25.6,0.3,5.5,50,,,
+M007,B004,DEMO-B,2026-10-07T08:00,PGNAA,company,Belt analyser #2,52000,,,,,62.1,,
+M008,B005,DEMO-B,2026-10-09T08:00,XRF_HANDHELD,customs,Border post XRF (demo),50000,,,,,58.4,1.6,900
