@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-22",
+ "generated": "2026-11-05",
  "source": "UN Comtrade (comtradeplus.un.org)",
  "commodities": {
   "2701": {
@@ -5303,6 +5303,26 @@
    "im_qty": 12656.0,
    "ex_price": null,
    "im_price": 66291.6,
+   "gap_value": null,
+   "gap_value_pct": null,
+   "gap_qty_pct": null,
+   "price_gap_pct": null,
+   "flags": [
+    "MISSING_EXPORTER"
+   ]
+  },
+  {
+   "freq": "A",
+   "period": "2025",
+   "hs": "7108",
+   "exporter": 496,
+   "importer": 757,
+   "ex_value": null,
+   "im_value": 1286358544.551,
+   "ex_qty": null,
+   "im_qty": 13152.0,
+   "ex_price": null,
+   "im_price": 97807.1,
    "gap_value": null,
    "gap_value_pct": null,
    "gap_qty_pct": null,
